@@ -1,0 +1,2 @@
+cd OnPlan
+python manage.py runserver
