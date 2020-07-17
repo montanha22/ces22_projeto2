@@ -117,8 +117,11 @@
                 <h2>Site de organização pessoal feito por estudantes para estudantes!</h2>
             </div>
             <div>
-                <button id="sign_in_button" onclick ='window.location = "/classroom/cursos"'>
-                </button>
+                <p>Teus cursos são esses, parça:</p>
+
+                {% for course in courses %}
+                    {{ course.name }} <br>
+                {% endfor %}
             </div>
         </div>
     </div>
