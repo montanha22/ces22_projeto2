@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300&display=swap" rel="stylesheet">    <script src = './../utils/jquery-3.5.1.min.js'></script>
+    <title>Document</title>
+
+    <style>
+        body{
+            background-color: aliceblue;
+            padding: 0px;
+            margin: 0px;
+        }
+        .logo {
+            margin: 0px;
+            font-family: "Roboto Mono"; 
+            font-weight: 350; 
+            font-size: 48px;
+            color: white;
+            letter-spacing: -5px;
+            clear: none;
+        }
+        #header{
+            margin: 0px;
+            background-color: black;
+            width: 100%;
+            height: 120px;
+            text-indent: 2.5%;
+            line-height: 120px;
+            clear: none;
+        }
+        #header h1{
+            float: left;
+        }
+        #main_div{
+            height: 700px;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+        }
+        #navegation_div{
+            width: 200px;
+            height: 700px;
+            background-color: black;
+            float: left;
+            padding: 0px;
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        #calendar_div{
+            width: 0px;
+            height: 700px;
+            float: right;
+            background-color: black;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+            padding: 0px;
+
+        }
+
+        footer{
+            clear: both;
+            width: 100%;
+            height: 70px;
+            background-color: black;
+        }
+        #navegation_div nav {
+            padding: 0px;
+            height: 100%;
+        }
+        #navegation_div nav ul{
+            padding: 0px;
+            margin: 0px;
+            height: 100%;
+        }
+        #navegation_div nav ul li{
+            display: block;
+            text-align: center;
+            list-style: none;
+
+            margin: 0px;
+            height: 60px;
+            color: white;
+
+            -webkit-box-shadow:inset 0px 0px 0px 10px white;
+            -moz-box-shadow:inset 0px 0px 0px 1px white;
+            box-shadow:inset 0px 0px 0px 1px white;
+
+        }
+
+        #navegation_div nav ul li:hover{
+            background-color: steelblue;
+            color: white;
+        }
+
+        table{
+            height: 100%;
+            width: 100%;
+        }
+
+        tr{
+            width: 100%;
+            height: 16.66%;
+        }
+        .cell{
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            -webkit-box-shadow:inset 0px 0px 0px 10px white;
+            -moz-box-shadow:inset 0px 0px 0px 1px white;
+            box-shadow:inset 0px 0px 0px 1px white;
+            font-size: 30px;
+        }
+        .cell2{
+            width: 100%;
+            height: 100%;
+            background-color: #555;
+            -webkit-box-shadow:inset 0px 0px 0px 10px white;
+            -moz-box-shadow:inset 0px 0px 0px 1px white;
+            box-shadow:inset 0px 0px 0px 1px white;
+            font-size: 30px;
+        }
+        .cell:hover{
+            background-color: steelblue;
+
+        }
+        div.cell div:first-of-type{
+            border: 1px solid white;
+            border-radius: 0px 0px 20px 0px;
+            height: 40px;
+            width: 50px;
+            text-align: center;
+        }
+        #time_travel{
+            list-style-type: none;    
+            margin: 0;
+            padding: 0;
+            height: 120px; 
+        }
+        #time_travel li{
+            float: left;
+            margin-right: 30px;
+            margin-left: 30px;
+        }
+        #time_travel li a {
+            display: block;
+            color: white;
+            text-align: center;
+            height: 120px;
+            width: 300px;
+            font-size: 40px;
+            font-weight: 900;
+
+            text-decoration: none;
+        }
+        #goback:hover, #gofront:hover{
+            background-color: steelblue;
+        }
+
+        #curr_month{
+            width: 300px;
+        }
+        #curr_month a{
+            width: 300px;
+        }
+
+        #month_div{
+            float: right;
+            height: 120px;;
+            width: 300px;
+            margin-right: 10px;
+        } 
+        #month_div div{
+            margin: 0 auto;
+            display: table;
+        }
+    </style>
+    <script>
+        $(function(){
+
+            meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+            function resizeCalendar() { 
+                var w = $(window).width();
+                // console.log($('#navegation_div').css('width').slice(0, -2) + $('#navegation_div').css('margin-right').slice(0, -2));
+                w = w - $('#navegation_div').css('width').slice(0, -2) - $('#navegation_div').css('margin-right').slice(0, -2) - $('#calendar_div').css('margin-right').slice(0, -2);
+                $('#calendar_div').css('width', Math.floor(w) - 1 + 'px');
+                $('#month_div').css('width', Math.floor(w) - 1 + 'px');
+            }
+
+
+            var nav_list_len = $('nav ul li').length;
+            console.log(nav_list_len);
+            var li_h = 100/nav_list_len;
+            $('nav ul li').css('height',li_h+"%")
+            $('nav ul li').css('line-height', $('nav ul li').css('height'))    
+
+            var matrix = [];
+            
+            for(var i=0; i<6; i++) {
+                matrix[i] = new Array(7);
+            }
+            var now = new Date();
+            var curr_month = now.getMonth();
+            var curr_year = now.getFullYear();
+
+            var d = new Date(curr_year, curr_month, 1);
+
+
+
+            function attCalendar(){
+                d = new Date(curr_year, curr_month, 1);
+                while(d.getDay() != 0)
+                {
+                    d.setDate(d.getDate()-1);
+                }
+                var htmlstr = '';
+                for(var week = 0; week<6; week++){
+                    htmlstr = htmlstr + '<tr>';
+
+                    for(var weekday = 0; weekday <7; weekday++){
+                        htmlstr = htmlstr + '<td>';
+                        matrix[week][weekday] = d.getDate();
+
+                        if(d.getDate() == now.getDate() && d.getFullYear() == now.getFullYear() && d.getMonth() == now.getMonth()){
+                            htmlstr = htmlstr + "<div class = 'cell'><div style = 'color: coral '> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                        }
+
+                        else if(d.getMonth() == curr_month){
+                            htmlstr = htmlstr + "<div class = 'cell'><div> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                        }
+                        else{
+                            htmlstr = htmlstr + "<div  class = 'cell2'><div> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                        }
+
+                        d.setDate(d.getDate() + 1);
+
+                        htmlstr= htmlstr + '</td>';
+
+                    }
+
+                    htmlstr = htmlstr + '</tr>';
+                }
+                $('#curr_month a').html((''+ meses[curr_month] + '').toUpperCase());
+                $('#calendar').html(htmlstr);
+            }
+
+
+
+        
+            $('.cell').mouseover(function(){
+            });
+
+            $('#gofront').click(function(){
+                if(curr_month == 11){
+                    curr_month=0;
+                    curr_year = curr_year+1;
+                    attCalendar();
+                }
+                else{
+                    curr_month ++;
+                    attCalendar();
+                }
+            });
+
+            $('#goback').click(function(){
+                if(curr_month == 0)
+                {
+                    curr_month=11;
+                    curr_year = curr_year-1;
+                }
+                else{
+                    curr_month --;
+                    attCalendar();
+                }
+            })
+
+            $(window).resize(resizeCalendar);
+            resizeCalendar();
+            attCalendar();
+
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="header">
+        <h1 class="logo">OnPlan!</h1>
+        <div id='month_div'>
+            <div>
+                <ul id='time_travel'>
+                    <li id='goback'><a>&MediumSpace; &lt;&MediumSpace;</a></li>
+                    <li id='curr_month'> <a>currr_month</a> </li>
+                    <li id='gofront'><a>&MediumSpace;&gt;&MediumSpace;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="main div">
+        <div id = "navegation_div">
+            <nav>
+                <ul>
+                    <li><a>Opção 1</a></li>
+                    <li><a>Opção 2</a></li>
+                    <li><a>Opção 3</a></li>
+                    <li><a>Opção 4</a></li>
+                    <li><a>Opção 5</a></li>
+
+
+                </ul>
+            </nav>
+        </div>
+        <div id = "calendar_div">
+            <table id = 'calendar'>
+                <!-- <tr>
+                    <td>Jill</td>
+                    <td>Smith</td>
+                    <td>50</td>
+                </tr>
+                <tr>
+                    <td>Eve</td>
+                    <td>Jackson</td>
+                    <td>94</td>
+                </tr> -->
+            </table> 
+        </div>
+
+    </div>
+    <footer>
+
+    </footer>
+    
+</body>
+</html>

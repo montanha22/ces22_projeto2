@@ -118,10 +118,11 @@
             </div>
             <div>
                 <p>Teus cursos são esses, parça:</p>
-
+                <ul>
                 {% for course in courses %}
-                    {{ course.name }} <br>
+                    <li>{{ course.name }}</li>
                 {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
