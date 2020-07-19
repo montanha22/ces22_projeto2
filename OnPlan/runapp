@@ -1,1 +1,4 @@
+cd ..
+pip install -r requirements.txt
+cd OnPlan
 python manage.py runserver
