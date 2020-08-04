@@ -7,8 +7,9 @@
     <title>Document</title>
 
     <style>
+        
         body{
-            background-color: aliceblue;
+            background-color: white;
             padding: 0px;
             margin: 0px;
         }
@@ -17,7 +18,7 @@
             font-family: "Roboto Mono"; 
             font-weight: 350; 
             font-size: 48px;
-            color: white;
+            color: #ee4540;
             letter-spacing: -5px;
             clear: none;
         }
@@ -83,7 +84,7 @@
 
             margin: 0px;
             height: 60px;
-            color: white;
+            color: #ee4540;
 
             -webkit-box-shadow:inset 0px 0px 0px 10px white;
             -moz-box-shadow:inset 0px 0px 0px 1px white;
@@ -92,7 +93,7 @@
         }
 
         #navegation_div nav ul li:hover{
-            background-color: steelblue;
+            background-color: #c72c41;
             color: white;
         }
 
@@ -108,79 +109,164 @@
         .cell{
             width: 100%;
             height: 100%;
-            background-color: black;
-            -webkit-box-shadow:inset 0px 0px 0px 10px white;
-            -moz-box-shadow:inset 0px 0px 0px 1px white;
-            box-shadow:inset 0px 0px 0px 1px white;
+            -webkit-box-shadow:inset 0px 0px 0px 10px #ee4540;
+            -moz-box-shadow:inset 0px 0px 0px 1px #ee4540;
+            box-shadow:inset 0px 0px 0px 1px #ee4540;
             font-size: 30px;
         }
         .cell2{
             width: 100%;
             height: 100%;
             background-color: #555;
-            -webkit-box-shadow:inset 0px 0px 0px 10px white;
-            -moz-box-shadow:inset 0px 0px 0px 1px white;
-            box-shadow:inset 0px 0px 0px 1px white;
+            -webkit-box-shadow:inset 0px 0px 0px 10px #ee4540;
+            -moz-box-shadow:inset 0px 0px 0px 1px #ee4540;
+            box-shadow:inset 0px 0px 0px 1px #ee4540;
             font-size: 30px;
         }
-        .cell:hover{
-            background-color: steelblue;
-
+        .cell div{
+            color: #ee4540;
         }
-        div.cell div:first-of-type{
-            border: 1px solid white;
-            border-radius: 0px 0px 20px 0px;
-            height: 40px;
-            width: 50px;
+        .cell:hover{
+            background-color: #c72c41;
+            
+        }
+
+        .cell:hover div{
+            color: white;
+        }
+        .cell:hover div:first-of-type{
+            border-color: white;
+        }
+        div.cell div:first-of-type, div.cell2 div:first-of-type{
+            border: 1px solid #ee4540;
+            border-radius: 0px 0px 10px 0px;
+            height: 30px;
+            width: 30px;
+            font-size: 20px;
             text-align: center;
         }
         #time_travel{
             list-style-type: none;    
-            margin: 0;
-            padding: 0;
+            margin: 0 auto;
+            padding: 0px;
+            width: 80%;
             height: 120px; 
         }
         #time_travel li{
-            float: left;
-            margin-right: 30px;
-            margin-left: 30px;
+            display: inline-block;
+            padding: 0px;
+            margin: 0px;
+            height: 120px;
+            align-items: center;
+            text-align: center;
         }
         #time_travel li a {
-            display: block;
-            color: white;
-            text-align: center;
+            margin: 0 auto;
+            padding: 0px;
+            color: #ee4540;
             height: 120px;
             width: 300px;
             font-size: 40px;
             font-weight: 900;
-
             text-decoration: none;
         }
         #goback:hover, #gofront:hover{
-            background-color: steelblue;
+            background-color: #c72c41;
         }
+        #goback:hover a, #gofront:hover a{
+            color: white;
+        }
+        
+
 
         #curr_month{
-            width: 300px;
+            width: 60%;
+        }
+        #gofront, #goback{
+            width: 15%;
         }
         #curr_month a{
-            width: 300px;
+            width: 100%;
+            text-align: center;
         }
 
         #month_div{
             float: right;
             height: 120px;;
-            width: 300px;
+            width: 800px;
             margin-right: 10px;
         } 
         #month_div div{
             margin: 0 auto;
+            width: 100%;
             display: table;
+        }
+        .unselectable {
+            /* -webkit-touch-callout: none; */
+            /* -webkit-user-select: none; */
+            /* -khtml-user-select: none; */
+            /* -moz-user-select: none; */
+            /* -ms-user-select: none; */
+            user-select: none;
+        }
+        .bgc_1{
+            background-color: #2d132c;
+        }
+        .form-popup{
+            visibility: hidden;
+            background-color: #801336;
+            -webkit-box-shadow: -3px 2px 21px 0px rgba(0,0,0,1);
+            -moz-box-shadow: -3px 2px 21px 0px rgba(0,0,0,1);
+            box-shadow: -3px 2px 21px 0px rgba(0,0,0,1);
+            position: fixed;
+            width: 500px;
+            height: 430px;
+            margin-left: 40%;
+            margin-top: 20px;
+            border: 1px solid white;
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+        .form-popup input, .form-popup textarea{
+            border: 0px;
+            border-bottom: 1px solid white;
+            color: white;
+            background-color:#801336;
+            position: relative;
+            margin: 0 auto;
+            margin-top: 25px;
+            height: 25px;
+            display: block;
+            width: 90%;
+            font-size: 25px;
+            padding: 10px;
+        }
+        .form-popup textarea{
+            border: 1px solid white;
+            border-top: 0px;
+            height: 100px;
+            width: 90%;
+        }
+        ::placeholder{
+            text-align: center;
+        }
+        .formbtn{
+            display: inline-block;
+            background-color: #c72c41;
+            border: 0px;
+            color: white;
+            margin-top: 25px;
+            width: 200px;
+            height: 50px;
+        }
+        .formbtn:hover{
+            background-color: #ee4540;
         }
     </style>
     <script>
-        $(function(){
-
+        $(document).ready(function(){
+            colors = ['2d132c', '801336', 'c72c41', 'ee4540'];
             meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
             function resizeCalendar() { 
                 var w = $(window).width();
@@ -225,7 +311,11 @@
                         matrix[week][weekday] = d.getDate();
 
                         if(d.getDate() == now.getDate() && d.getFullYear() == now.getFullYear() && d.getMonth() == now.getMonth()){
-                            htmlstr = htmlstr + "<div class = 'cell'><div style = 'color: coral '> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                            if(curr_month == now.getMonth())
+                                htmlstr = htmlstr + "<div class = 'cell'><div style = 'color: #FFF '> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                            else
+                                htmlstr = htmlstr + "<div class = 'cell2'><div style = 'color: #FFF '> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+
                         }
 
                         else if(d.getMonth() == curr_month){
@@ -243,25 +333,33 @@
 
                     htmlstr = htmlstr + '</tr>';
                 }
-                $('#curr_month a').html((''+ meses[curr_month] + '').toUpperCase());
+                $('#curr_month a').html((''+ meses[curr_month] + '/' + curr_year).toUpperCase());
                 $('#calendar').html(htmlstr);
             }
 
+            function att_colors(){
+                $('.bgc_1').css('background-color', '#2d132c');
+                //$('.cell').css('background-color', '#2d132c');
+            }
+            function att_all(){
+                attCalendar();
+                att_colors();
 
+            }
+            function showForm() {
+                $('.form-popup').css('visibility', 'visible');
+            };
 
-        
-            $('.cell').mouseover(function(){
-            });
 
             $('#gofront').click(function(){
                 if(curr_month == 11){
                     curr_month=0;
                     curr_year = curr_year+1;
-                    attCalendar();
+                    att_all();
                 }
                 else{
                     curr_month ++;
-                    attCalendar();
+                    att_all();
                 }
             });
 
@@ -273,34 +371,54 @@
                 }
                 else{
                     curr_month --;
-                    attCalendar();
+                    att_all();
                 }
             })
 
             $(window).resize(resizeCalendar);
             resizeCalendar();
-            attCalendar();
+            att_all();
+
+            function cancelForm(){
+                $('.form-popup').css('visibility','hidden')
+            }
+            function submitForm(){
+                cancelForm();
+            }
+
+            $(document).on('click','div.cell',function(event){
+                showForm();
+            });
+
+            $(document).on('click','#submitForm',function(event){
+                submitForm();
+            });
+
+            $(document).on('click','#cancelForm',function(event){
+                cancelForm();
+            });
+
 
         });
     </script>
 </head>
 
-<body>
+<body class="unselectable">
 
-    <div id="header">
+    <div id="header" class = 'bgc_1'>
         <h1 class="logo">OnPlan!</h1>
         <div id='month_div'>
             <div>
-                <ul id='time_travel'>
-                    <li id='goback'><a>&MediumSpace; &lt;&MediumSpace;</a></li>
+                <ul id='time_travel' class="unselectable">
+                    <li id='goback'><a>&lt;</a></li>
                     <li id='curr_month'> <a>currr_month</a> </li>
-                    <li id='gofront'><a>&MediumSpace;&gt;&MediumSpace;</a></li>
+                    <li id='gofront'><a>&gt;</a></li>
                 </ul>
             </div>
         </div>
     </div>
     <div id="main div">
-        <div id = "navegation_div">
+        <div id = "navegation_div" class = 'bgc_1'>
             <nav>
                 <ul>
                     <li><a>Opção 1</a></li>
@@ -313,7 +431,7 @@
                 </ul>
             </nav>
         </div>
-        <div id = "calendar_div">
+        <div id = "calendar_div" class = 'bgc_1'>
             <table id = 'calendar'>
                 <!-- <tr>
                     <td>Jill</td>
@@ -327,9 +445,25 @@
                 </tr> -->
             </table> 
         </div>
-
     </div>
-    <footer>
+
+    <div class="form-popup" id="addtask">
+        <form action="/action_page.php" class="form-container">
+          <h2>ADICIONE UMA ATIVIDADE</h2>
+      
+          <input type="title" placeholder="Título da atividade" name="title" required>
+      
+          <input type="sigla" placeholder="Abreviação (opcional)" name="abrev">
+
+          <textarea  placeholder= "Descrição (opcional)"></textarea>
+      
+          <button type="submit" class="formbtn" id="submitForm">Adicionar</button>
+          <button type="button" class="formbtn" id="cancelForm">Cancelar</button>
+
+        </form>
+    </div>
+
+    <footer class = 'bgc_1'>
 
     </footer>
     
