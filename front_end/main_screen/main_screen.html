@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300&display=swap" rel="stylesheet">    <script src = './../utils/jquery-3.5.1.min.js'></script>
-    <title>Document</title>
+    
+    <link rel="stylesheet" type="text/css" href="../styles/tabela_materias.css" />
+
+    <link rel="stylesheet" type="text/css" href="../styles/lista_atividades.css" />
+    <title>OnPlan</title>
 
     <style>
         
@@ -12,6 +16,7 @@
             background-color: white;
             padding: 0px;
             margin: 0px;
+            font-family: roboto mono;
         }
         .logo {
             margin: 0px;
@@ -295,116 +300,112 @@
             text-align: left;
             margin-bottom: 30px;
         }
-        #materias_div{
-            right: 10px;
-            position: absolute;
 
-            background-color: #2d132c;
-            margin-top: 10px;
-            width: 100%;
-            height: 700px;
-            color: white;
-            overflow:auto;
-            max-height: 700px;
-
-        }
-
-        #materias_table{
-            position: relative;
-            text-align: center;
-            width: 100%;
-            overflow-y: auto;  
-            max-height: 525px;
-            padding: 0px;
-            margin: -5px;
-            text-transform: uppercase;
-        }
-
-         #materias_table_tbody{
-            position: sticky;
-            overflow-y: auto;  
-            width: 100%;
-            background-color: #2d132c;
-        } 
-        #materias_table td, #materias_table th{
-            border: 1px solid #ee4540;
-        }
-        #materias_table_tbody td td, #materias_table_tbody td th{
-            border: none;
-            border-right: 1px solid #ee4540;
-            /* border-bottom: 1px solid white; */
-        }
-        #add_materia_button{
-            border: 1px solid white;
-            display: block;
-            text-align: center;
-            float: right;
-            padding: 0px;
-            background-color: #801336;
-            width: 300px;
-            height: 80px;
-            color: white;
-            margin: 5px;
-
-        }
-        #add_materia_button:hover{
-            background-color: #ee4540;
-            color: white;
-        }
-        #add_materia_button h2{
-            padding: 0px;
-            margin: 0px;
-            margin-top: 25px;
-            vertical-align: middle;
-        }
-        .remove_materia_button, .add_nota_button, .remove_nota_button{
-            width: 30px;
-        }
-        .remove_nota_button:hover, .add_nota_button:hover, .remove_materia_button:hover{
-            background-color: #ee4540;
-            color: white;
-        }
-        #materias_table thead{
-            background-color: #2d132c;
-            color: white;
-        }
 
     </style>
     <script>
         $(document).ready(function(){
             colors = ['2d132c', '801336', 'c72c41', 'ee4540'];
+
             meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+            
             sTable = [
-                ['ces22', '10', [['avaliação1', 'peso1', 'nota1'], ['avaliação2', 'peso2', 'nota2']], 'anotações sobre ces22'],
-                ['ces22', '10', [['avaliação1', 'peso1', 'nota1'], ['avaliação2', 'peso2', 'nota2']], 'anotações sobre ces22'],                
-                ];
+                {
+                    'materia':'ces22', 
+                    'faltas':'10', 
+                    'boletim':[
+                        {'nome_da_avaliacao':'avaliação1', 'peso':'1', 'nota':'9.3'}, 
+                        {'nome_da_avaliacao':'avaliação1', 'peso':'1', 'nota':'9.3'}
+                    ], 
+                    'anotacoes':'anotações sobre ces22'
+                },
+                
+            ];
+
+            tasks = [
+                {
+                    'titulo'        :   'lista de ces 22', 
+                    'materia'       :   'ces-22', 
+                    'done'          :   false,
+                    'data_limite'   :   '06/08/2020',
+                    'descrição'     :   'lista sobre coisas de poo já que a materia é poo',
+                    'classroom'     :   false,
+                },
+            ];
+
+            todolist = {
+                '20.11.2020' :['Atividade 1', 'Trabalho de alguma coisa' ,'projeto de algo'] , 
+                'data':['lista','de','tarefas'], 
+                'ata':['lista','de','tarefas']
+            };
             // Redimensionar calendário para mudanças de tamanho da tela
             function resizeCalendar() { 
                 var w = $(window).width();
                 w = w - $('#navegation_div').css('width').slice(0, -2) - $('#navegation_div').css('margin-right').slice(0, -2) - $('#calendar_div').css('margin-right').slice(0, -2);
                 $('#calendar_div').css('width', Math.floor(w) - 1 + 'px');
                 $('#materias_div').css('width', Math.floor(w) - 1 + 'px');
+                $('#atividades_div').css('width', Math.floor(w) - 1 + 'px');
                 $('#month_div').css('width', Math.floor(w) - 1 + 'px');
             }
 
+
+            function makeToDoListFromTasks(tasks){
+                todolist = {};
+                for(i = 0; i < tasks.length; i++){
+                    task = tasks[i];
+
+                    if (Object.keys(todolist).includes(task.data_limite)){
+                        todolist[task.data_limite].push(task.titulo);
+                    }
+                    else{
+                        todolist[task.data_limite] = [task.titulo];
+                    }
+                }
+                alert(todolist['06/08/2020']);
+            };
+            makeToDoListFromTasks(tasks);
+            // todolist
+            function drawToDoList(todolist, add){
+                var htmlstr = '';
+                keys = Object.keys(todolist);
+                keys.sort();
+                for(i = 0; i < keys.length; i++){
+                    htmlstr += '<li class="atividades_major_item">';
+                    htmlstr += '<h2 class="atividades_date">' + keys[i]+ '</h2>';
+                    htmlstr += '<ul class = "atividades_list">';
+
+                    for(k = 0; k < todolist[keys[i]].length; k++){
+                        atividade = todolist[keys[i]][k];
+                        htmlstr += "<li>" + atividade + "<div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>";
+                    }
+                    htmlstr += "</ul></li>";
+                }
+
+                $('#atividades_major_list').html(htmlstr);
+            }
             // Tabela de matérias
             function drawSubjectTable(subjectTable, add){
                 var htmlstr = '';
                 for(k = 0; k<subjectTable.length; k++){
                     linhadatabela = subjectTable[k];
                         htmlstr += '<tr>'; 
-                        htmlstr += '<td><table class="table100"><tr><th class = "remove_materia_button" contenteditable="false">-</th> <td>' + linhadatabela[0] + '</td></table></td>';
-                        htmlstr += '<td>' + linhadatabela[1] + '</td>';
-                        htmlstr += '<td><table class="table100">';
-                        for (i = 0; i < linhadatabela[2].length; i++){
-                            htmlstr += '<tr><th>'+linhadatabela[2][i][0]+'</th> <td>'+linhadatabela[2][i][1]+'</td><td>'+linhadatabela[2][i][2]+"</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>";
-
+                        htmlstr += '<td><table class="table100"><tr><th class = "remove_materia_button" contenteditable="false">-</th> <td>' + linhadatabela['materia'] + '</td></table></td>';
+                        htmlstr += '<td>' + linhadatabela['faltas'] + '</td>';
+                        htmlstr += '<td><table class="table100 table_fixed">';
+                        somaPonderada = 0;
+                        somaPesos = 0;
+                        for (i = 0; i < linhadatabela['boletim'].length; i++){
+                            htmlstr += '<tr><th>'+linhadatabela['boletim'][i]['nome_da_avaliacao']+'</th> <td>'+linhadatabela['boletim'][i]['peso']+'</td><td>'+linhadatabela['boletim'][i]['nota']+"</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>";
+                            somaPonderada += Number(linhadatabela['boletim'][i]['peso']) * Number(linhadatabela['boletim'][i]['nota']);
+                            somaPesos += Number(linhadatabela['boletim'][i]['peso']);
                         }
+                        if(somaPesos == 0)
+                            somaPesos = 1;
                                 // <tr><th>p1</th> <td>10</td><td>1</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>
                                 // <tr><th>p2</th> <td>10</td><td>1</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>
-                        htmlstr += "<tr contenteditable='false'><td>MÉDIA:</td><td> 10</td><td></td><td class = 'add_nota_button' contenteditable='false'>+</td></tr></table>"; 
+                        htmlstr += "<tr contenteditable='false'><td>MÉDIA:</td><td>"+ somaPonderada/somaPesos +"</td><td></td><td class = 'add_nota_button' contenteditable='false'>+</td></tr></table>"; 
                         htmlstr += "</td>";
-                        htmlstr += "<td>" + linhadatabela[3] + "</td></tr>";
+                        htmlstr += "<td>" + linhadatabela['anotacoes'] + "</td></tr>";
                 }
                 if(add){
                     $('#materias_table_tbody').append(htmlstr);
@@ -535,8 +536,26 @@
             attAll();
             drawSubjectTable(sTable, false);
             $(document).on('click','#add_materia_button', function(event){
-                emptyTable = [['','',[],'']];
+                emptyTable = [{'materia':'', 'faltas':'', 'boletim':[], 'anotacoes':''}];
                 drawSubjectTable(emptyTable, true);
+            });
+            drawToDoList(todolist, false);
+
+            $(document).on('click', '.atividades_list li', function(event){
+                if($(this).css('text-decoration').startsWith('rgb'))
+                    $(this).css('text-decoration','line-through')
+                else
+                    $(this).css('text-decoration','none')
+
+            });
+
+
+
+            $(document).on('click','.excludeItem', function(event){
+                if($(this).parent().parent().children().length == 1)
+                    $(this).parent().parent().parent().remove()
+                else
+                    $(this).parent().remove()
             });
 
             $(document).on('click','.add_nota_button', function(event){
@@ -548,6 +567,20 @@
             $(document).on('click','.remove_materia_button',function(event){
                 $(this).parent().parent().parent().parent().parent().remove()
             });
+            $(document).on('click','#materias_button', function(event){
+                if($("#materias_div").css('visibility') == 'hidden')
+                    $("#materias_div").css('visibility','visible');
+                else
+                    $("#materias_div").css('visibility','hidden');
+
+            })
+            $(document).on('click','#atividades_button', function(event){
+                if($("#atividades_div").css('visibility') == 'hidden')
+                    $("#atividades_div").css('visibility','visible');
+                else
+                    $("#atividades_div").css('visibility','hidden');
+
+            })
         });
     </script>
 </head>
@@ -573,8 +606,8 @@
                     <li><a>Filtro</a></li>
                     <li><a>Para fazer</a></li>
                     <li><a>Tabela de notas</a></li>
-                    <li><a>Todas as atividades</a></li>
-                    <li><a>Matérias</a></li>
+                    <li id = 'atividades_button'><a>Atividades</a></li>
+                    <li id = 'materias_button'><a>Matérias</a></li>
 
 
                 </ul>
@@ -612,7 +645,7 @@
             
                 <input type="title" placeholder="Título da atividade" name="title" required>
             
-                <input type="sigla" placeholder="Abreviação (opcional)" name="abrev">
+                <input type="sigla" placeholder="Matéria (opcional)" name="abrev">
 
                 <textarea  placeholder= "Descrição (opcional)"></textarea>
             
@@ -635,7 +668,7 @@
             </thead>
             <tbody contenteditable='true' id='materias_table_tbody'>
                 <tr>
-                    <td><table class="table100"><tr><th class = 'remove_nota_button' contenteditable='false'>-</th> <td>Ces22</td></table></td>
+                    <!-- <td><table class="table100"><tr><th class = 'remove_nota_button' contenteditable='false'>-</th> <td>Ces22</td></table></td>
                     <td>10</td>
                     <td> 
                         <table class="table100">
@@ -644,13 +677,55 @@
                             <tr contenteditable='false'><td>MÉDIA:</td><td> 10</td><td></td><td class = 'add_nota_button' contenteditable='false'>+</td></tr>
                         </table> 
                     </td>
-                    <td> Anotações sobre a materias</td>
+                    <td> Anotações sobre a materias</td> -->
                 </tr>
                 
                
             </tbody>
         </table>
         <div id='add_materia_button'><h2>Adicionar matéria</h2></div>
+    </div>
+    <div id="atividades_div">
+        <h1 style="text-align: center;"> Atividades </h1>
+        <ul id='atividades_major_list'>
+            <li class="atividades_major_item">
+                <h2 class="atividades_date">02.10.2020</h2>
+                    <ul class = "atividades_list">
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+
+                    </ul>
+            </li>
+            <li class="atividades_major_item">
+                <h2 class="atividades_date">02.10.2020</h2>
+                    <ul class = "atividades_list">
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+
+                    </ul>
+            </li>
+            <li class="atividades_major_item">
+                <h2 class="atividades_date">02.10.2020</h2>
+                    <ul class = "atividades_list">
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+
+                    </ul>
+            </li>
+            <li class="atividades_major_item">
+                <h2 class="atividades_date">02.10.2020</h2>
+                    <ul class = "atividades_list">
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+                        <li>atividdade 1 <div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>
+
+                    </ul>
+            </li>
+        </ul>
     </div>
     <footer class = 'bgc_1'>
 

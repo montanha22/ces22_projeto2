@@ -1,0 +1,80 @@
+
+#materias_div{
+    visibility: hidden;
+    right: 10px;
+    position: absolute;
+
+    background-color: #2d132c;
+    margin-top: 10px;
+    width: 100%;
+    height: 700px;
+    color: white;
+    overflow:auto;
+    max-height: 700px;
+
+}
+.table_fixed{
+    table-layout: fixed;
+}
+#materias_table{
+    position: relative;
+    text-align: center;
+    width: 98%;
+    overflow-y: auto;  
+    max-height: 525px;
+    padding: 0px;
+    margin: 10px;
+    margin-right: 20px;
+    text-transform: uppercase;
+}
+
+#materias_table_tbody{
+    position: sticky;
+    overflow-y: auto;  
+    width: 100%;
+    background-color: #2d132c;
+} 
+#materias_table td, #materias_table th{
+    border: 1px solid #ee4540;
+    max-width: 50px;
+    overflow: hidden;
+}
+#materias_table_tbody td td, #materias_table_tbody td th{
+    border: none;
+    border-right: 1px solid #ee4540;
+    /* border-bottom: 1px solid white; */
+}
+#add_materia_button{
+    border: 1px solid white;
+    display: block;
+    text-align: center;
+    float: right;
+    padding: 0px;
+    background-color: #801336;
+    width: 300px;
+    height: 80px;
+    color: white;
+    margin: 5px;
+
+}
+#add_materia_button:hover{
+    background-color: #ee4540;
+    color: white;
+}
+#add_materia_button h2{
+    padding: 0px;
+    margin: 0px;
+    margin-top: 25px;
+    vertical-align: middle;
+}
+.remove_materia_button, .add_nota_button, .remove_nota_button{
+    width: 30px;
+}
+.remove_nota_button:hover, .add_nota_button:hover, .remove_materia_button:hover{
+    background-color: #ee4540;
+    color: white;
+}
+#materias_table thead{
+    background-color: #2d132c;
+    color: white;
+}
