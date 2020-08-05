@@ -51,6 +51,7 @@
             margin-bottom: 10px;
         }
         #calendar_div{
+            position: relative;
             width: 0px;
             height: 700px;
             float: right;
@@ -60,6 +61,9 @@
             margin-right: 10px;
             padding: 0px;
 
+        }
+        #calendar{
+            position: static;
         }
 
         footer{
@@ -97,7 +101,7 @@
             color: white;
         }
 
-        table{
+        .table100{
             height: 100%;
             width: 100%;
         }
@@ -219,20 +223,26 @@
             -moz-box-shadow: -3px 2px 21px 0px rgba(0,0,0,1);
             box-shadow: -3px 2px 21px 0px rgba(0,0,0,1);
             position: fixed;
-            width: 500px;
+            width: 1000px;
             height: 430px;
-            margin-left: 40%;
+            margin-left: 25%;
             margin-top: 20px;
-            border: 1px solid white;
-            padding: 15px;
+            /* border: 1px solid white; */
+            padding-top: 2%;
+            padding-bottom: 2%;
             text-align: center;
             color: white;
+        }
+        #form{
+            margin: 0 auto;
+            float: right;
+            width: 50%;
         }
         .form-popup input, .form-popup textarea{
             border: 0px;
             border-bottom: 1px solid white;
             color: white;
-            background-color:#801336;
+            background-color:#6b102b;
             position: relative;
             margin: 0 auto;
             margin-top: 25px;
@@ -243,7 +253,7 @@
             padding: 10px;
         }
         .form-popup textarea{
-            border: 1px solid white;
+            /* border: 1px solid white; */
             border-top: 0px;
             height: 100px;
             width: 90%;
@@ -263,35 +273,161 @@
         .formbtn:hover{
             background-color: #ee4540;
         }
+        #dateDetails{
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            float: left;
+            width: 50%;
+            height: 430px;
+            border-right:  1px solid white;
+            /* border-style: inset; */
+        }
+        #dateDetails dl{
+
+        }
+        #dateDetails dl dt{
+            text-align: center;
+            margin-bottom: 5px;
+
+        }
+        #dateDetails dl dd{
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        #materias_div{
+            right: 10px;
+            position: absolute;
+
+            background-color: #2d132c;
+            margin-top: 10px;
+            width: 100%;
+            height: 700px;
+            color: white;
+            overflow:auto;
+            max-height: 700px;
+
+        }
+
+        #materias_table{
+            position: relative;
+            text-align: center;
+            width: 100%;
+            overflow-y: auto;  
+            max-height: 525px;
+            padding: 0px;
+            margin: -5px;
+            text-transform: uppercase;
+        }
+
+         #materias_table_tbody{
+            position: sticky;
+            overflow-y: auto;  
+            width: 100%;
+            background-color: #2d132c;
+        } 
+        #materias_table td, #materias_table th{
+            border: 1px solid #ee4540;
+        }
+        #materias_table_tbody td td, #materias_table_tbody td th{
+            border: none;
+            border-right: 1px solid #ee4540;
+            /* border-bottom: 1px solid white; */
+        }
+        #add_materia_button{
+            border: 1px solid white;
+            display: block;
+            text-align: center;
+            float: right;
+            padding: 0px;
+            background-color: #801336;
+            width: 300px;
+            height: 80px;
+            color: white;
+            margin: 5px;
+
+        }
+        #add_materia_button:hover{
+            background-color: #ee4540;
+            color: white;
+        }
+        #add_materia_button h2{
+            padding: 0px;
+            margin: 0px;
+            margin-top: 25px;
+            vertical-align: middle;
+        }
+        .remove_materia_button, .add_nota_button, .remove_nota_button{
+            width: 30px;
+        }
+        .remove_nota_button:hover, .add_nota_button:hover, .remove_materia_button:hover{
+            background-color: #ee4540;
+            color: white;
+        }
+        #materias_table thead{
+            background-color: #2d132c;
+            color: white;
+        }
+
     </style>
     <script>
         $(document).ready(function(){
             colors = ['2d132c', '801336', 'c72c41', 'ee4540'];
             meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+            sTable = [
+                ['ces22', '10', [['avaliação1', 'peso1', 'nota1'], ['avaliação2', 'peso2', 'nota2']], 'anotações sobre ces22'],
+                ['ces22', '10', [['avaliação1', 'peso1', 'nota1'], ['avaliação2', 'peso2', 'nota2']], 'anotações sobre ces22'],                
+                ];
+            // Redimensionar calendário para mudanças de tamanho da tela
             function resizeCalendar() { 
                 var w = $(window).width();
-                // console.log($('#navegation_div').css('width').slice(0, -2) + $('#navegation_div').css('margin-right').slice(0, -2));
                 w = w - $('#navegation_div').css('width').slice(0, -2) - $('#navegation_div').css('margin-right').slice(0, -2) - $('#calendar_div').css('margin-right').slice(0, -2);
                 $('#calendar_div').css('width', Math.floor(w) - 1 + 'px');
+                $('#materias_div').css('width', Math.floor(w) - 1 + 'px');
                 $('#month_div').css('width', Math.floor(w) - 1 + 'px');
             }
 
+            // Tabela de matérias
+            function drawSubjectTable(subjectTable, add){
+                var htmlstr = '';
+                for(k = 0; k<subjectTable.length; k++){
+                    linhadatabela = subjectTable[k];
+                        htmlstr += '<tr>'; 
+                        htmlstr += '<td><table class="table100"><tr><th class = "remove_materia_button" contenteditable="false">-</th> <td>' + linhadatabela[0] + '</td></table></td>';
+                        htmlstr += '<td>' + linhadatabela[1] + '</td>';
+                        htmlstr += '<td><table class="table100">';
+                        for (i = 0; i < linhadatabela[2].length; i++){
+                            htmlstr += '<tr><th>'+linhadatabela[2][i][0]+'</th> <td>'+linhadatabela[2][i][1]+'</td><td>'+linhadatabela[2][i][2]+"</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>";
 
+                        }
+                                // <tr><th>p1</th> <td>10</td><td>1</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>
+                                // <tr><th>p2</th> <td>10</td><td>1</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>
+                        htmlstr += "<tr contenteditable='false'><td>MÉDIA:</td><td> 10</td><td></td><td class = 'add_nota_button' contenteditable='false'>+</td></tr></table>"; 
+                        htmlstr += "</td>";
+                        htmlstr += "<td>" + linhadatabela[3] + "</td></tr>";
+                }
+                if(add){
+                    $('#materias_table_tbody').append(htmlstr);
+                }
+                else{
+                    $('#materias_table_tbody').html(htmlstr);
+                }
+            }
+
+            // Redimensionar elementos de navegação
             var nav_list_len = $('nav ul li').length;
             console.log(nav_list_len);
             var li_h = 100/nav_list_len;
             $('nav ul li').css('height',li_h+"%")
             $('nav ul li').css('line-height', $('nav ul li').css('height'))    
 
-            var matrix = [];
-            
+            var matrix = [];  
             for(var i=0; i<6; i++) {
                 matrix[i] = new Array(7);
             }
             var now = new Date();
             var curr_month = now.getMonth();
             var curr_year = now.getFullYear();
-
             var d = new Date(curr_year, curr_month, 1);
 
 
@@ -312,17 +448,17 @@
 
                         if(d.getDate() == now.getDate() && d.getFullYear() == now.getFullYear() && d.getMonth() == now.getMonth()){
                             if(curr_month == now.getMonth())
-                                htmlstr = htmlstr + "<div class = 'cell'><div style = 'color: #FFF '> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                                htmlstr = htmlstr + "<div class = 'cell'><div style = 'color: #FFF '>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
                             else
-                                htmlstr = htmlstr + "<div class = 'cell2'><div style = 'color: #FFF '> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                                htmlstr = htmlstr + "<div class = 'cell2'><div style = 'color: #FFF '>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
 
                         }
 
                         else if(d.getMonth() == curr_month){
-                            htmlstr = htmlstr + "<div class = 'cell'><div> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                            htmlstr = htmlstr + "<div class = 'cell'><div>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
                         }
                         else{
-                            htmlstr = htmlstr + "<div  class = 'cell2'><div> " + d.getDate()+ " </div> <div><ul></ul></div> </div>";
+                            htmlstr = htmlstr + "<div  class = 'cell2'><div>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
                         }
 
                         d.setDate(d.getDate() + 1);
@@ -337,32 +473,33 @@
                 $('#calendar').html(htmlstr);
             }
 
-            function att_colors(){
+            function attColors(){
                 $('.bgc_1').css('background-color', '#2d132c');
                 //$('.cell').css('background-color', '#2d132c');
             }
-            function att_all(){
+            function attAll(){
                 attCalendar();
-                att_colors();
+                attColors();
 
             }
-            function showForm() {
-                $('.form-popup').css('visibility', 'visible');
+            function attDetails(day){
+                $('#dateDetails h2').text('Detalhes do dia ' + day.toString().padStart(2, "0") + '/' + ((d.getMonth() + 11)%12 + 1).toString().padStart(2, "0") +'/'+ d.getFullYear());
             };
-
-
+            function showForm(day) {
+                $('.form-popup').css('visibility', 'visible');
+                attDetails(day);
+            };
             $('#gofront').click(function(){
                 if(curr_month == 11){
                     curr_month=0;
                     curr_year = curr_year+1;
-                    att_all();
+                    attAll();
                 }
                 else{
                     curr_month ++;
-                    att_all();
+                    attAll();
                 }
             });
-
             $('#goback').click(function(){
                 if(curr_month == 0)
                 {
@@ -371,14 +508,11 @@
                 }
                 else{
                     curr_month --;
-                    att_all();
+                    attAll();
                 }
-            })
-
+            });
             $(window).resize(resizeCalendar);
-            resizeCalendar();
-            att_all();
-
+            
             function cancelForm(){
                 $('.form-popup').css('visibility','hidden')
             }
@@ -387,7 +521,7 @@
             }
 
             $(document).on('click','div.cell',function(event){
-                showForm();
+                showForm(event.target.firstChild.textContent);
             });
 
             $(document).on('click','#submitForm',function(event){
@@ -397,8 +531,23 @@
             $(document).on('click','#cancelForm',function(event){
                 cancelForm();
             });
+            resizeCalendar();
+            attAll();
+            drawSubjectTable(sTable, false);
+            $(document).on('click','#add_materia_button', function(event){
+                emptyTable = [['','',[],'']];
+                drawSubjectTable(emptyTable, true);
+            });
 
-
+            $(document).on('click','.add_nota_button', function(event){
+                $(this).parent().before('<tr><th>'+'</th> <td>'+'</td><td>'+"</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>")
+            });
+            $(document).on('click','.remove_nota_button',function(event){
+                $(this).parent().remove()
+            });
+            $(document).on('click','.remove_materia_button',function(event){
+                $(this).parent().parent().parent().parent().parent().remove()
+            });
         });
     </script>
 </head>
@@ -421,18 +570,18 @@
         <div id = "navegation_div" class = 'bgc_1'>
             <nav>
                 <ul>
-                    <li><a>Opção 1</a></li>
-                    <li><a>Opção 2</a></li>
-                    <li><a>Opção 3</a></li>
-                    <li><a>Opção 4</a></li>
-                    <li><a>Opção 5</a></li>
+                    <li><a>Filtro</a></li>
+                    <li><a>Para fazer</a></li>
+                    <li><a>Tabela de notas</a></li>
+                    <li><a>Todas as atividades</a></li>
+                    <li><a>Matérias</a></li>
 
 
                 </ul>
             </nav>
         </div>
         <div id = "calendar_div" class = 'bgc_1'>
-            <table id = 'calendar'>
+            <table class = 'table100'id = 'calendar'>
                 <!-- <tr>
                     <td>Jill</td>
                     <td>Smith</td>
@@ -448,21 +597,61 @@
     </div>
 
     <div class="form-popup" id="addtask">
-        <form action="/action_page.php" class="form-container">
-          <h2>ADICIONE UMA ATIVIDADE</h2>
-      
-          <input type="title" placeholder="Título da atividade" name="title" required>
-      
-          <input type="sigla" placeholder="Abreviação (opcional)" name="abrev">
+        <div id='dateDetails'>
+            <h2>Detalhes do dia XX/XX/XXXX</h2>
+            <dl>
+                <dt>Trabalho de ces-22</dt>
+                <dd> A nível organizacional, a execução dos pontos do programa afeta positivamente a correta previsão do fluxo de informações.</dd>
+                <dt>Exame de ctc-21</dt>
+                <dd>Caros amigos, a contínua expansão de nossa atividade não pode mais se dissociar das formas de ação.</dd>
+            </dl>
+        </div>
+        <div id = 'form'>
+            <form class="form-container" autocomplete="off">
+                <h2>ADICIONE UMA ATIVIDADE</h2>
+            
+                <input type="title" placeholder="Título da atividade" name="title" required>
+            
+                <input type="sigla" placeholder="Abreviação (opcional)" name="abrev">
 
-          <textarea  placeholder= "Descrição (opcional)"></textarea>
-      
-          <button type="submit" class="formbtn" id="submitForm">Adicionar</button>
-          <button type="button" class="formbtn" id="cancelForm">Cancelar</button>
+                <textarea  placeholder= "Descrição (opcional)"></textarea>
+            
+                <button type="submit" class="formbtn" id="submitForm">Adicionar</button>
+                <button type="button" class="formbtn" id="cancelForm">Cancelar</button>
 
-        </form>
+            </form>
+        </div>
     </div>
-
+    <div id="materias_div">
+        <h1 style="text-align: center;"> Matérias </h1>
+        <table id="materias_table">
+            <thead>
+                <tr>
+                    <th style = "width: 20%;">Matéria</th>
+                    <th style = "width: 10%;">Faltas</th> 
+                    <th>Notas (avaliação, peso, nota)</th>
+                    <th>Anotações</th>
+                </tr>
+            </thead>
+            <tbody contenteditable='true' id='materias_table_tbody'>
+                <tr>
+                    <td><table class="table100"><tr><th class = 'remove_nota_button' contenteditable='false'>-</th> <td>Ces22</td></table></td>
+                    <td>10</td>
+                    <td> 
+                        <table class="table100">
+                            <tr><th>p1</th> <td>10</td><td>1</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>
+                            <tr><th>p2</th> <td>10</td><td>1</td><td class = 'remove_nota_button' contenteditable='false'>-</td></tr>
+                            <tr contenteditable='false'><td>MÉDIA:</td><td> 10</td><td></td><td class = 'add_nota_button' contenteditable='false'>+</td></tr>
+                        </table> 
+                    </td>
+                    <td> Anotações sobre a materias</td>
+                </tr>
+                
+               
+            </tbody>
+        </table>
+        <div id='add_materia_button'><h2>Adicionar matéria</h2></div>
+    </div>
     <footer class = 'bgc_1'>
 
     </footer>
