@@ -56,7 +56,9 @@
             margin-bottom: 10px;
         }
         #calendar_div{
-            position: relative;
+            position: absolute;
+            right: 0px;
+    
             width: 0px;
             height: 700px;
             float: right;
@@ -65,12 +67,17 @@
             margin-bottom: 10px;
             margin-right: 10px;
             padding: 0px;
+            overflow: scroll;
 
         }
         #calendar{
-            position: static;
+            margin: 0px;
+            position: relative;
+            table-layout: fixed;
         }
-
+        .monthdaydiv{
+            float: left;
+        }
         footer{
             clear: both;
             width: 100%;
@@ -145,6 +152,21 @@
         }
         .cell:hover div:first-of-type{
             border-color: white;
+        }
+        .cell ul, .cell2 ul{
+            list-style: none;
+            height: 100%;
+        }
+        .cell ul li{
+            margin: 0px;
+            padding-top: 1px;
+            padding-bottom: 0px;
+        }
+
+        .cell_item{
+            display: block;
+            margin: 0px;
+            font-size: 15px;
         }
         div.cell div:first-of-type, div.cell2 div:first-of-type{
             border: 1px solid #ee4540;
@@ -324,6 +346,7 @@
 
             tasks = [
                 {
+                    'id'            :   0,
                     'titulo'        :   'lista de ces 22', 
                     'materia'       :   'ces-22', 
                     'done'          :   false,
@@ -331,13 +354,18 @@
                     'descrição'     :   'lista sobre coisas de poo já que a materia é poo',
                     'classroom'     :   false,
                 },
+                {
+                    'id'            :   1,
+                    'titulo'        :   'lista de ces 22', 
+                    'materia'       :   'ces-22', 
+                    'done'          :   false,
+                    'data_limite'   :   '05/08/2020',
+                    'descrição'     :   'lista sobre coisas de poo já que a materia é poo',
+                    'classroom'     :   false,
+                },
             ];
 
-            todolist = {
-                '20.11.2020' :['Atividade 1', 'Trabalho de alguma coisa' ,'projeto de algo'] , 
-                'data':['lista','de','tarefas'], 
-                'ata':['lista','de','tarefas']
-            };
+
             // Redimensionar calendário para mudanças de tamanho da tela
             function resizeCalendar() { 
                 var w = $(window).width();
@@ -361,9 +389,9 @@
                         todolist[task.data_limite] = [task.titulo];
                     }
                 }
-                alert(todolist['06/08/2020']);
+                return todolist;
             };
-            makeToDoListFromTasks(tasks);
+            todolist = makeToDoListFromTasks(tasks);
             // todolist
             function drawToDoList(todolist, add){
                 var htmlstr = '';
@@ -446,20 +474,29 @@
                     for(var weekday = 0; weekday <7; weekday++){
                         htmlstr = htmlstr + '<td>';
                         matrix[week][weekday] = d.getDate();
+                        
+                        currcelldate = d.getDate().toString().padStart(2, "0") + '/' + (d.getMonth()+1).toString().padStart(2, "0") + '/' + d.getFullYear();
+                        listoftasks = [];
+                        if(Object.keys(todolist).includes(currcelldate))
+                            listoftasks = todolist[currcelldate];
 
+                        liststr = '';
+                        for(i = 0; i < listoftasks.length; i++){
+                            liststr += "<li class = 'cell_item'>"+ listoftasks[i] +"</li>";
+                        }
                         if(d.getDate() == now.getDate() && d.getFullYear() == now.getFullYear() && d.getMonth() == now.getMonth()){
                             if(curr_month == now.getMonth())
-                                htmlstr = htmlstr + "<div class = 'cell'><div style = 'color: #FFF '>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
+                                htmlstr = htmlstr + "<div class = 'cell'><div style = 'color: #FFF ' class = 'monthdaydiv' >" + d.getDate()+ "</div> <div><ul>"+liststr+"</ul></div> </div>";
                             else
-                                htmlstr = htmlstr + "<div class = 'cell2'><div style = 'color: #FFF '>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
+                                htmlstr = htmlstr + "<div class = 'cell2'><div style = 'color: #FFF ' class = 'monthdaydiv'>" + d.getDate()+ "</div> <div><ul>"+liststr+"</ul></div> </div>";
 
                         }
 
                         else if(d.getMonth() == curr_month){
-                            htmlstr = htmlstr + "<div class = 'cell'><div>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
+                            htmlstr = htmlstr + "<div class = 'cell' ><div  class = 'monthdaydiv'>" + d.getDate()+ "</div> <div><ul>"+liststr+"</ul></div> </div>";
                         }
                         else{
-                            htmlstr = htmlstr + "<div  class = 'cell2'><div>" + d.getDate()+ "</div> <div><ul></ul></div> </div>";
+                            htmlstr = htmlstr + "<div  class = 'cell2'><div  class = 'monthdaydiv'>" + d.getDate()+ "</div> <div><ul>"+liststr+"</ul></div> </div>";
                         }
 
                         d.setDate(d.getDate() + 1);
@@ -522,12 +559,10 @@
             }
 
             $(document).on('click','div.cell',function(event){
-                showForm(event.target.firstChild.textContent);
+                showForm($(this).children(".monthdaydiv").html());
             });
 
-            $(document).on('click','#submitForm',function(event){
-                submitForm();
-            });
+
 
             $(document).on('click','#cancelForm',function(event){
                 cancelForm();
@@ -539,6 +574,8 @@
                 emptyTable = [{'materia':'', 'faltas':'', 'boletim':[], 'anotacoes':''}];
                 drawSubjectTable(emptyTable, true);
             });
+
+            todolist = makeToDoListFromTasks(tasks);
             drawToDoList(todolist, false);
 
             $(document).on('click', '.atividades_list li', function(event){
@@ -552,10 +589,18 @@
 
 
             $(document).on('click','.excludeItem', function(event){
-                if($(this).parent().parent().children().length == 1)
+                nome_da_tarefa = $(this).parent().text().slice(0, -3);
+                for(i = 0; i < tasks.length; i++){
+                    if(tasks[i].titulo == nome_da_tarefa){
+                        tasks.splice(i, 1);
+                    }
+                }
+                if($(this).parent().parent().children().length == 1){
                     $(this).parent().parent().parent().remove()
-                else
+                }
+                else{
                     $(this).parent().remove()
+                }
             });
 
             $(document).on('click','.add_nota_button', function(event){
@@ -572,6 +617,7 @@
                     $("#materias_div").css('visibility','visible');
                 else
                     $("#materias_div").css('visibility','hidden');
+                attAll();
 
             })
             $(document).on('click','#atividades_button', function(event){
@@ -579,8 +625,33 @@
                     $("#atividades_div").css('visibility','visible');
                 else
                     $("#atividades_div").css('visibility','hidden');
+                todolist = makeToDoListFromTasks(tasks);
+                drawToDoList(todolist, false);
+                attAll();
 
             })
+
+            $(document).on('click',"#submitForm", function(event){  
+
+                atividade = {};
+                atividade.titulo = $('#input_titulo_atividade').val();
+                atividade.materia = $('#input_materia_atividade').val();
+                atividade.done = false;
+                atividade.data_limite = $('#dateDetails h2').html().replace(/[a-zA-Z ]/g,'');
+                atividade.descrição = $('#input_descricao_atividade').val();
+                atividade.classroom = false;
+
+                tasks.push(atividade);
+
+                submitForm();
+                todolist = makeToDoListFromTasks(tasks);
+                drawToDoList(todolist, false);
+                $('#input_titulo_atividade').val('');
+                $('#input_materia_atividade').val('');
+                $('#input_descricao_atividade').val('');
+                attAll();
+
+            });
         });
     </script>
 </head>
@@ -643,13 +714,13 @@
             <form class="form-container" autocomplete="off">
                 <h2>ADICIONE UMA ATIVIDADE</h2>
             
-                <input type="title" placeholder="Título da atividade" name="title" required>
+                <input type="title" placeholder="Título da atividade" name="title" id ='input_titulo_atividade' required>
             
-                <input type="sigla" placeholder="Matéria (opcional)" name="abrev">
+                <input type="sigla" placeholder="Matéria (opcional)" name="materia" id ='input_materia_atividade'>
 
-                <textarea  placeholder= "Descrição (opcional)"></textarea>
+                <textarea  placeholder= "Descrição (opcional)" id ='input_descricao_atividade'></textarea>
             
-                <button type="submit" class="formbtn" id="submitForm">Adicionar</button>
+                <button type="button" class="formbtn" id="submitForm">Adicionar</button>
                 <button type="button" class="formbtn" id="cancelForm">Cancelar</button>
 
             </form>

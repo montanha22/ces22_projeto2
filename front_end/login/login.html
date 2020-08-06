@@ -10,11 +10,7 @@
         })
     </script>
     <style>
-        body{
-            background-color: white;
-            padding: 0;
-            margin: 0;
-        }
+
         #div_header{
             background-color: #F25F5C; 
             height: 160px;
@@ -63,16 +59,13 @@
             border: 2px solid black;
         }
 
-        h2{
-            color: black;
-        }
         #login_div div{
             text-align: center;
         }
 
         #login_div div h1{
             display: block;
-            background-color: #F25F5C;
+            background-color: #2d132c;
         }
         #login_div div:nth-child(3){
             background-color: white;
@@ -97,19 +90,48 @@
             height: 92px;
             width: 382px;
         }
+ 
+        body{
+            background-color: white;
+            padding: 0px;
+            margin: 0px;
+            font-family: roboto mono;
+        }
+        .logo {
+            margin: 0px;
+            font-family: "Roboto Mono"; 
+            font-weight: 350; 
+            font-size: 48px;
+            color: #ee4540;
+            letter-spacing: -5px;
+            clear: none;
+        }
+        #header{
+            margin: 0px;
+            width: 100%;
+            height: 120px;
+            text-indent: 2.5%;
+            line-height: 120px;
+            clear: none;
+        }
+        #header h1{
+            float: left;
+        }
+
+        .bgc_1{
+            background-color: #2d132c;
+        }
     </style>
 </head>
 
 <body>
-    <div id="div_header">
-        <div id='div_logo'>
-            <h1 class = "logo">OnPlan!</h1>
-        </div>
+    <div id="header" class = 'bgc_1'>
+        <h1 class="logo">OnPlan!</h1>
     </div>
 
-    <div id="main_div">
+    <div id="main_div" class = 'bgc_1'>
         <div id="login_div">
-            <div>
+            <div class = 'bgc_1'>
                 <h1 class = 'logo'>OnPlan!</h1>
             </div>
             <div>
