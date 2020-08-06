@@ -1,0 +1,66 @@
+/* colors = ['2d132c', '801336', 'c72c41', 'ee4540']; */
+
+#atividades_div{
+    visibility: hidden;
+    right: 10px;
+    position: absolute;
+
+    background-color: #2d132c;
+    margin-top: 10px;
+    width: 100%;
+    height: 700px;
+    color: white;
+    overflow:auto;
+    max-height: 700px;
+
+
+
+}
+
+.atividades_date{
+    background-color: #ee4540;
+    font-size: 25px;
+    font-weight: 900;
+    text-align: center;
+    margin-right: 40px;
+}
+.atividades_major_item{
+    display: block;
+    clear: both;
+}
+
+#atividades_major_list{
+    list-style: none;
+}
+.atividades_list{
+    list-style: none;
+    padding-left: 0px;
+}
+.atividades_list li{
+    display: block;
+    height: 50px;
+    font-size: 30px;
+    padding: 0px;
+    padding-left: 10px;
+    margin-right: 40px;
+    text-decoration: none;
+    /* border-bottom: 1px solid white; */
+}
+.atividades_list li:hover{
+    background-color: #692c67;
+}
+.excludeItem{
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    float: right;
+    /* border: 1px solid white; */
+    height: 100%;
+    margin: 0px;
+    text-align: center;
+    background-color: #2d132c;
+}
+
+.excludeItem:hover{
+    background-color: #ee4540;
+}
