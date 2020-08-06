@@ -1,4 +1,6 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -117,12 +119,30 @@
                 <h2>Site de organização pessoal feito por estudantes para estudantes!</h2>
             </div>
             <div>
-                <p>Teus cursos são esses, parça:</p>
+                <!--<p>Teus cursos são esses, {{user.first_name}}:</p>
                 <ul>
                 {% for course in courses %}
-                    <li>{{ course.name }}</li>
+                    <li>{{course.name}}</li>
                 {% endfor %}
                 </ul>
+                
+
+                {% for work in coursework %}
+                    <li>{{work.title}}  Entrega: {{work.dueDate}}</li>
+                {% endfor %}
+
+                <button onclick = 'OnLogout()'>Logout</button>
+
+                <script>
+                    function OnLogout(){
+                        window.location = '/accounts/logout'
+                    }
+                </script> -->
+
+                <p>Essas são suas tarefas:</p>
+
+                {{tarefas}}
+
             </div>
         </div>
     </div>
