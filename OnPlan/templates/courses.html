@@ -139,6 +139,14 @@
                     }
                 </script> -->
 
+                <button onclick = 'OnLogout()'>Logout</button>
+
+                <script>
+                    function OnLogout(){
+                        window.location = '/accounts/logout'
+                    }
+                </script>
+                
                 <p>Essas são suas tarefas:</p>
 
                 {{tarefas}}

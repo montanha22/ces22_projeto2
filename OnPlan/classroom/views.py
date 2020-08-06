@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from django.shortcuts import render
-
+import json
 from allauth.socialaccount.models import SocialToken
 
 # If modifying these scopes, delete the file token.pickle.
@@ -17,11 +17,8 @@ SCOPES = [
     'https://www.googleapis.com/auth/classroom.student-submissions.me.readonly',
     ]
 #SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly']
-def show_courses(request):
+def show_calendar(request):
 
-    """Shows basic usage of the Classroom API.
-    Prints the names of the first 10 courses the user has access to.
-    """
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -54,15 +51,14 @@ def show_courses(request):
         coursework = results.get('courseWork',[])
         for work in coursework:
             date = work.get("dueDate",{})
+            date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
             a = {
             'id':i,
             'titulo':work.get("title","Sem Titulo"),
             'materia':course.get("name","Sem Matéria"),
             'descrição':work.get("description","Sem Descrição"),
-            'classroom':True,
-            'dia_limite':date.get("day","Sem Dia de entrega"),
-            'mes_limite':date.get("month","Sem Mês de entrega"),
-            'ano_limite':date.get("year","Sem Ano de entrega"),
+            'classroom':"true",
+            'data_limite':date
             }
             # results = service.courses().courseWork().studentSubmissions().list(courseId = course['id'], courseWorkId = work["id"]).execute()
             # submissions = results.get('studentSubmissions',[])
@@ -73,7 +69,9 @@ def show_courses(request):
             # 'nota': submission.get('assignedGrade',-1),
             # }
             # a.update(b)
-        tarefas.append(a)
-        i = i+1
-
-    return render(request, 'courses.html', {'courses': courses,'coursework' : coursework, 'tarefas': tarefas})
+            tarefas.append(a)
+            i = i+1
+    
+    #tarefas = json.dumps(tarefas)
+    print(tarefas)
+    return render(request, 'calendar.html', {'tarefas': tarefas})
