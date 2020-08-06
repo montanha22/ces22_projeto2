@@ -311,6 +311,7 @@
             width: 50%;
             height: 430px;
             border-right:  1px solid white;
+            overflow: scroll;
             /* border-style: inset; */
         }
         #dateDetails dl{
@@ -389,10 +390,10 @@
                     task = tasks[i];
 
                     if (Object.keys(todolist).includes(task.data_limite)){
-                        todolist[task.data_limite].push(task.titulo);
+                        todolist[task.data_limite].push(task.materia + ': '+ task.titulo);
                     }
                     else{
-                        todolist[task.data_limite] = [task.titulo];
+                        todolist[task.data_limite] = [task.materia + ': ' + task.titulo];
                     }
                 }
                 return todolist;
@@ -405,12 +406,18 @@
                 keys.sort();
                 for(i = 0; i < keys.length; i++){
                     htmlstr += '<li class="atividades_major_item">';
-                    htmlstr += '<h2 class="atividades_date">' + keys[i]+ '</h2>';
+                    if (keys[i] == '00/00/0000'){
+                        htmlstr += '<h2 class="atividades_date">' + 'Sem data de entrega definida' + '</h2>';
+
+                    }
+                    else{
+                        htmlstr += '<h2 class="atividades_date">' + keys[i]+ '</h2>';
+                    }
                     htmlstr += '<ul class = "atividades_list">';
 
                     for(k = 0; k < todolist[keys[i]].length; k++){
                         atividade = todolist[keys[i]][k];
-                        htmlstr += "<li>" + atividade + "<div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>";
+                        htmlstr += "<li>"  + atividade + "<div class = 'excludeItem'>&ThinSpace;X&ThinSpace;</div></li>";
                     }
                     htmlstr += "</ul></li>";
                 }
@@ -527,7 +534,20 @@
 
             }
             function attDetails(day){
-                $('#dateDetails h2').text('Detalhes do dia ' + day.toString().padStart(2, "0") + '/' + ((d.getMonth() + 11)%12 + 1).toString().padStart(2, "0") +'/'+ d.getFullYear());
+                dataStr = day.toString().padStart(2, "0") + '/' + ((d.getMonth() + 11)%12 + 1).toString().padStart(2, "0") +'/'+ d.getFullYear();
+                $('#dateDetails h2').text('Detalhes do dia ' + dataStr);
+                $('#atividadeDetailList').html('')
+                htmlstr = '';
+                for(i=0; i < tasks.length; i++)
+                {
+                    task = tasks[i];
+                    if(task.data_limite == dataStr){
+                        htmlstr += '<dt>'+task.titulo+'</dt>';
+                        htmlstr += '<dd>' + task['descrição'] +'</dd>';
+                    }
+                }
+                $('#atividadeDetailList').html(htmlstr)
+
             };
             function showForm(day) {
                 $('.form-popup').css('visibility', 'visible');
@@ -710,7 +730,7 @@
     <div class="form-popup" id="addtask">
         <div id='dateDetails'>
             <h2>Detalhes do dia XX/XX/XXXX</h2>
-            <dl>
+            <dl id='atividadeDetailList'>
                 <dt>Trabalho de ces-22</dt>
                 <dd> A nível organizacional, a execução dos pontos do programa afeta positivamente a correta previsão do fluxo de informações.</dd>
                 <dt>Exame de ctc-21</dt>
