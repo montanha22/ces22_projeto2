@@ -143,6 +143,7 @@ AUTHENTICATION_BACKENDS = (
 SITE_ID = 2
 LOGIN_REDIRECT_URL = '/classroom/calendar'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_LOGOUT_ON_GET = True
 
@@ -151,6 +152,8 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'profile',
             'email',
+            'https://www.googleapis.com/auth/classroom.courses.readonly',
+            'https://www.googleapis.com/auth/classroom.student-submissions.me.readonly',
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',

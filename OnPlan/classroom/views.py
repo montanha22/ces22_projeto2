@@ -10,6 +10,7 @@ from google.auth.transport.requests import Request
 from django.shortcuts import render
 import json
 from allauth.socialaccount.models import SocialToken
+from google.oauth2.credentials import Credentials
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
@@ -17,25 +18,30 @@ SCOPES = [
     'https://www.googleapis.com/auth/classroom.student-submissions.me.readonly',
     ]
 #SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly']
+
+
 def show_calendar(request):
 
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+    # creds = None
+    # # The file token.pickle stores the user's access and refresh tokens, and is
+    # # created automatically when the authorization flow completes for the first
+    # # time.
+    # if os.path.exists('token.pickle'):
+    #     with open('token.pickle', 'rb') as token:
+    #         creds = pickle.load(token)
+    # # If there are no (valid) credentials available, let the user log in.
+    # if not creds or not creds.valid:
+    #     if creds and creds.expired and creds.refresh_token:
+    #         creds.refresh(Request())
+    #     else:
+    #         flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+    #         creds = flow.run_local_server(port=0)
+    #     # Save the credentials for the next run
+    #     with open('token.pickle', 'wb') as token:
+    #         pickle.dump(creds, token)
+    
+    social_token = SocialToken.objects.get(account__user=request.user, account__provider = 'google')
+    creds = Credentials(token=social_token.token,refresh_token=social_token.token_secret,client_id=social_token.app.client_id,client_secret=social_token.app.secret)
 
     service = build('classroom', 'v1', credentials=creds)
 
@@ -73,5 +79,5 @@ def show_calendar(request):
             i = i+1
     
     #tarefas = json.dumps(tarefas)
-    print(tarefas)
+    #print(tarefas)
     return render(request, 'calendar.html', {'tarefas': tarefas})
