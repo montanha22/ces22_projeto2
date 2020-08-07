@@ -46,7 +46,7 @@ def show_calendar(request):
     service = build('classroom', 'v1', credentials=creds)
 
     # Call the Classroom API
-    results = service.courses().list(pageSize=10).execute()
+    results = service.courses().list().execute()
     courses = results.get('courses', [])
     coursework = []
     #submissions = []
