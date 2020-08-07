@@ -12,6 +12,8 @@ import json
 from allauth.socialaccount.models import SocialToken
 from google.oauth2.credentials import Credentials
 from classroom.models import tarefa_classroom, tarefa_personalizada
+from itertools import chain
+import datetime
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
@@ -45,7 +47,10 @@ def classroom_sync(request):
                 date = work.get("dueDate",{})
                 time = work.get("dueTime",{})
                 if time == {'hours': 2, 'minutes': 59}:
-                    date = str(max(date.get("day")-1,1)).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
+                    date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
+                    date = datetime.datetime.strptime(date,"%d/%m/%Y")
+                    date = date - datetime.timedelta(days=1)
+                    date = datetime.datetime.strftime(date,'%d/%m/%Y')
                 else:
                     date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
                 # a = {
@@ -85,22 +90,14 @@ def show_calendar(request):
     tc = list(tarefa_classroom.objects.filter(usuario=request.user).values())
     tp = list(tarefa_personalizada.objects.filter(usuario=request.user).values())
 
-    #print(tarefa_classroom.objects.filter(usuario=request.user).values())
-    
-    #if(tc == []):
-       # return redirect('/classroom/sincronizar')
-
-    tarefas = tc
-    if(tp != []):
-        tarefas.append(tp)
-
+    tarefas = list(chain(tc,tp))
     return render(request, 'calendar.html', {'tarefas': tarefas})
 
 
 def salvar_atividade(request):
     
     post = request.POST
-    nt = tarefa_classroom(
+    nt = tarefa_personalizada(
         titulo = post.get("titulo","Sem Titulo"),
         materia= post.get("materia","Sem Matéria"),
         descrição=post.get("descrição","Sem Descrição"), 
@@ -117,7 +114,7 @@ def excluir_atividade(request):
 
     post = request.POST
 
-    if post.get("classroom"):
+    if post.get("classroom") == 'true':
         tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
     else:
         tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
