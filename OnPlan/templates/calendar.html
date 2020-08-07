@@ -689,7 +689,11 @@
             $(document).on('click','.excludeItem', function(event){
                 nome_da_tarefa = $(this).parent().text().slice(0, -3);
                 for(i = 0; i < tasks.length; i++){
-                    if(tasks[i].titulo == nome_da_tarefa){
+                    acc = tasks[i].materia + ': ' + tasks[i].titulo
+                    if(acc == nome_da_tarefa){
+                        titulo = tasks[i].titulo;
+                        classroom = tasks[i].classroom;
+                        materia = tasks[i].materia;
                         tasks.splice(i, 1);
                     }
                 }
@@ -699,6 +703,38 @@
                 else{
                     $(this).parent().remove()
                 }
+
+                const form = document.createElement('form')
+                form.method = 'post'
+                form.action = '/classroom/excluiratividade'
+
+                // Agora que fica bronco mesmo
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'titulo';
+                hiddenField.value = titulo;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'classroom';
+                hiddenField.value = classroom.toString();
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'materia';
+                hiddenField.value = materia;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'csrfmiddlewaretoken';
+                hiddenField.value = "{{ csrf_token }}";
+                form.appendChild(hiddenField);
+
+                document.body.appendChild(form);
+                form.submit()
             });
 
             $(document).on('click','.add_nota_button', function(event){
@@ -738,7 +774,8 @@
                 atividade.data_limite = $('#dateDetails h2').html().replace(/[a-zA-Z ]/g,'');
                 atividade.descrição = $('#input_descricao_atividade').val();
                 atividade.classroom = false;
-
+                
+                a = atividade
                 tasks.push(atividade);
 
                 submitForm();
@@ -748,21 +785,58 @@
                 $('#input_materia_atividade').val('');
                 $('#input_descricao_atividade').val('');
                 attAll();
-
+                
                 const form = document.createElement('form')
                 form.method = 'post'
                 form.action = '/classroom/salvaratividade'
 
                 // Agora que fica bronco mesmo
-                const hiddenField = document.createElement('input');
+                hiddenField = document.createElement('input');
                 hiddenField.type = 'hidden';
-                hiddenField.name = titulo;
-                hiddenField.value = atividade.titulo;
+                hiddenField.name = 'titulo';
+                hiddenField.value = a.titulo;
                 form.appendChild(hiddenField);
 
-                console.log(form)
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'materia';
+                hiddenField.value = a.materia;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'done';
+                hiddenField.value = a.done;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'data_limite';
+                hiddenField.value = a.data_limite;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'descrição';
+                hiddenField.value = a.descrição;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'classroom';
+                hiddenField.value = a.classroom;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'csrfmiddlewaretoken';
+                hiddenField.value = "{{ csrf_token }}";
+                form.appendChild(hiddenField);
+
+
+
                 document.body.appendChild(form);
-                //form.submit();
+                form.submit();
 
 
 

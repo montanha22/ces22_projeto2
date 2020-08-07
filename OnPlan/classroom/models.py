@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 
 
 class tarefa_classroom(models.Model):
-    id = models.CharField(max_length=30, primary_key=True)
     titulo = models.CharField(max_length=400)
     materia = models.CharField(max_length=400)
     descrição = models.CharField(max_length=10000)
@@ -14,7 +13,6 @@ class tarefa_classroom(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class tarefa_personalizada(models.Model):
-    id = models.CharField(max_length=30, primary_key=True)
     titulo = models.CharField(max_length=400)
     materia = models.CharField(max_length=400)
     descrição = models.CharField(max_length=10000)

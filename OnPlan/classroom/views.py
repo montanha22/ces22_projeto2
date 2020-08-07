@@ -22,7 +22,6 @@ SCOPES = [
 
 def classroom_sync(request):
     
-    user = request.user
     social_token = SocialToken.objects.get(account__user=request.user, account__provider = 'google')
     creds = Credentials(token=social_token.token,refresh_token=social_token.token_secret,client_id=social_token.app.client_id,client_secret=social_token.app.secret)
 
@@ -30,15 +29,14 @@ def classroom_sync(request):
 
     #Delete Old activities
 
-    tarefa_classroom.objects.filter(usuario=user).delete()
+    tarefa_classroom.objects.filter(usuario=request.user).delete()
 
      # Call the Classroom API
     results = service.courses().list().execute()
     courses = results.get('courses', [])
     coursework = []
     #submissions = []
-    tarefas = []
-    i = 0
+    #tarefas = []
     for course in courses:
         if course["courseState"] == "ACTIVE":
             results = service.courses().courseWork().list(courseId = course['id']).execute()
@@ -47,7 +45,7 @@ def classroom_sync(request):
                 date = work.get("dueDate",{})
                 time = work.get("dueTime",{})
                 if time == {'hours': 2, 'minutes': 59}:
-                    date = str(date.get("day")-1).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
+                    date = str(max(date.get("day")-1,1)).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
                 else:
                     date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
                 # a = {
@@ -60,7 +58,6 @@ def classroom_sync(request):
                 # }
                 
                 nt = tarefa_classroom(
-                    id = str(i),
                     titulo = work.get("title","Sem Titulo"),
                     materia= course.get("name","Sem Matéria"),
                     descrição=work.get("description","Sem Descrição"), 
@@ -80,7 +77,6 @@ def classroom_sync(request):
                 # }
                 # a.update(b)
                 # tarefas.append(a)
-                i = i+1
 
     return redirect('/classroom/calendar')
 
@@ -88,13 +84,45 @@ def show_calendar(request):
     
     tc = list(tarefa_classroom.objects.filter(usuario=request.user).values())
     tp = list(tarefa_personalizada.objects.filter(usuario=request.user).values())
-    
-    if(tc == []):
-        return redirect('/classroom/sincronizar')
 
-    if(tp == []):
-        tarefas = tc
-    else:
-        tarefas = tc.append(tp)
+    #print(tarefa_classroom.objects.filter(usuario=request.user).values())
+    
+    #if(tc == []):
+       # return redirect('/classroom/sincronizar')
+
+    tarefas = tc
+    if(tp != []):
+        tarefas.append(tp)
 
     return render(request, 'calendar.html', {'tarefas': tarefas})
+
+
+def salvar_atividade(request):
+    
+    post = request.POST
+    nt = tarefa_classroom(
+        titulo = post.get("titulo","Sem Titulo"),
+        materia= post.get("materia","Sem Matéria"),
+        descrição=post.get("descrição","Sem Descrição"), 
+        classroom= "false",
+        data_limite= post.get("data_limite","00/00/0000"),
+        usuario = request.user
+    )
+    nt.save()
+
+    return redirect('/classroom/calendar')
+
+
+def excluir_atividade(request):
+
+    post = request.POST
+
+    if post.get("classroom"):
+        tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+    else:
+        tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+
+    tarefa.delete()
+
+    return redirect('/classroom/calendar')
+    
