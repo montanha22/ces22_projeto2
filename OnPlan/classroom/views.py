@@ -69,7 +69,8 @@ def classroom_sync(request):
                         descrição=work.get("description","Sem Descrição"), 
                         classroom= "true",
                         data_limite= date,
-                        usuario = request.user
+                        usuario = request.user,
+                        done = 'false'
                     )
                     nt.save()
                     
@@ -107,7 +108,8 @@ def salvar_atividade(request):
         descrição=post.get("descrição","Sem Descrição"), 
         classroom= "false",
         data_limite= post.get("data_limite","00/00/0000"),
-        usuario = request.user
+        usuario = request.user,
+        done = 'false'
     )
     nt.save()
 
@@ -124,6 +126,19 @@ def excluir_atividade(request):
         tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
 
     tarefa.delete()
+
+    return redirect('/classroom/calendar')
+
+def completar_atividade(request):
+
+    post = request.POST
+
+    if post.get("classroom") == 'true':
+        tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+    else:
+        tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+
+    tarefa.update(done=post.get('done'))
 
     return redirect('/classroom/calendar')
     

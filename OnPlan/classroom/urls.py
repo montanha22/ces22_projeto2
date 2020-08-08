@@ -7,4 +7,5 @@ urlpatterns = [
     path('sincronizar',views.classroom_sync, name = 'classroom_sync'),
     path('salvaratividade',views.salvar_atividade, name = 'salvar_atividade'),
     path('excluiratividade',views.excluir_atividade, name = 'excluir_atividade'),
+    path('completaratividade',views.completar_atividade, name = 'completar_atividade'),
 ]

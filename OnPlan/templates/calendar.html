@@ -794,6 +794,10 @@
                         // console.log(tasks[i].materia)
                         if(tasks[i].materia == materia && tarefa == tasks[i].titulo){
                             tasks[i].done = true;
+                            titulo = tasks[i].titulo;
+                            classroom = tasks[i].classroom;
+                            materia = tasks[i].materia;
+                            done = true;
 
                         }
                     }
@@ -803,9 +807,51 @@
                     for(i=0; i<tasks.length; i++){
                         if(tasks[i].materia == materia && tarefa == tasks[i].titulo){
                             tasks[i].done = false;
+                            titulo = tasks[i].titulo;
+                            classroom = tasks[i].classroom;
+                            materia = tasks[i].materia;
+                            done = false;
                         }
                     }
                 }
+
+                const form = document.createElement('form')
+                form.method = 'post'
+                form.action = '/classroom/completaratividade'
+
+                // Agora que fica bronco mesmo
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'titulo';
+                hiddenField.value = titulo;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'classroom';
+                hiddenField.value = classroom.toString();
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'materia';
+                hiddenField.value = materia;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'done';
+                hiddenField.value = done;
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'csrfmiddlewaretoken';
+                hiddenField.value = "{{ csrf_token }}";
+                form.appendChild(hiddenField);
+
+                document.body.appendChild(form);
+                form.submit()
 
             });
 
@@ -1011,7 +1057,7 @@
                     <li id='sync_button'><a> Sincronizar</a></li>
                     <li id = 'atividades_button'><a>Atividades</a></li>
                     <li id = 'materias_button'><a>Matérias</a></li>
-                    <li><a>Filtro</a></li>
+                    <!-- <li><a>Filtro</a></li> -->
                     <li id='logout_button'><a>Logout</a></li>
 
 
