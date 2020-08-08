@@ -23,67 +23,71 @@ SCOPES = [
 #SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly']
 
 def classroom_sync(request):
-    
-    social_token = SocialToken.objects.get(account__user=request.user, account__provider = 'google')
-    creds = Credentials(token=social_token.token,refresh_token=social_token.token_secret,client_id=social_token.app.client_id,client_secret=social_token.app.secret)
 
-    service = build('classroom', 'v1', credentials=creds)
+    try:
+        social_token = SocialToken.objects.get(account__user=request.user, account__provider = 'google')
+        creds = Credentials(token=social_token.token,refresh_token=social_token.token_secret,client_id=social_token.app.client_id,client_secret=social_token.app.secret)
+        service = build('classroom', 'v1', credentials=creds)
 
-    #Delete Old activities
+        #Delete Old activities
 
-    tarefa_classroom.objects.filter(usuario=request.user).delete()
+        tarefa_classroom.objects.filter(usuario=request.user).delete()
 
-     # Call the Classroom API
-    results = service.courses().list().execute()
-    courses = results.get('courses', [])
-    coursework = []
-    #submissions = []
-    #tarefas = []
-    for course in courses:
-        if course["courseState"] == "ACTIVE":
-            results = service.courses().courseWork().list(courseId = course['id']).execute()
-            coursework = results.get('courseWork',[])
-            for work in coursework:
-                date = work.get("dueDate",{})
-                time = work.get("dueTime",{})
-                if time == {'hours': 2, 'minutes': 59}:
-                    date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
-                    date = datetime.datetime.strptime(date,"%d/%m/%Y")
-                    date = date - datetime.timedelta(days=1)
-                    date = datetime.datetime.strftime(date,'%d/%m/%Y')
-                else:
-                    date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
-                # a = {
-                # 'id':str(i),
-                # 'titulo':work.get("title","Sem Titulo"),
-                # 'materia':course.get("name","Sem Matéria"),
-                # 'descrição':work.get("description","Sem Descrição"),
-                # 'classroom':"true",
-                # 'data_limite':date,
-                # }
-                
-                nt = tarefa_classroom(
-                    titulo = work.get("title","Sem Titulo"),
-                    materia= course.get("name","Sem Matéria"),
-                    descrição=work.get("description","Sem Descrição"), 
-                    classroom= "true",
-                    data_limite= date,
-                    usuario = request.user
-                )
-                nt.save()
-                
-                # results = service.courses().courseWork().studentSubmissions().list(courseId = course['id'], courseWorkId = work["id"]).execute()
-                # submissions = results.get('studentSubmissions',[])
-                # submission = submissions[-1]
-                # b = {
-                # 'atrasado': submission.get('late',False),
-                # 'entregue': (submission.get('state','0') == "TURNED_IN" or submission.get('state','0') == "RETURNED"),
-                # 'nota': submission.get('assignedGrade',-1),
-                # }
-                # a.update(b)
-                # tarefas.append(a)
+        # Call the Classroom API
+        results = service.courses().list().execute()
+        courses = results.get('courses', [])
+        coursework = []
+        #submissions = []
+        #tarefas = []
+        
+        for course in courses:
+            if course["courseState"] == "ACTIVE":
+                results = service.courses().courseWork().list(courseId = course['id']).execute()
+                coursework = results.get('courseWork',[])
+                for work in coursework:
+                    date = work.get("dueDate",{})
+                    time = work.get("dueTime",{})
+                    if time == {'hours': 2, 'minutes': 59}:
+                        date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
+                        date = datetime.datetime.strptime(date,"%d/%m/%Y")
+                        date = date - datetime.timedelta(days=1)
+                        date = datetime.datetime.strftime(date,'%d/%m/%Y')
+                    else:
+                        date = str(date.get("day","00")).zfill(2) + "/" + str(date.get("month","00")).zfill(2) + "/" + str(date.get("year","0000")).zfill(4)
+                    # a = {
+                    # 'id':str(i),
+                    # 'titulo':work.get("title","Sem Titulo"),
+                    # 'materia':course.get("name","Sem Matéria"),
+                    # 'descrição':work.get("description","Sem Descrição"),
+                    # 'classroom':"true",
+                    # 'data_limite':date,
+                    # }
+                    
+                    nt = tarefa_classroom(
+                        titulo = work.get("title","Sem Titulo"),
+                        materia= course.get("name","Sem Matéria"),
+                        descrição=work.get("description","Sem Descrição"), 
+                        classroom= "true",
+                        data_limite= date,
+                        usuario = request.user
+                    )
+                    nt.save()
+                    
+                    # results = service.courses().courseWork().studentSubmissions().list(courseId = course['id'], courseWorkId = work["id"]).execute()
+                    # submissions = results.get('studentSubmissions',[])
+                    # submission = submissions[-1]
+                    # b = {
+                    # 'atrasado': submission.get('late',False),
+                    # 'entregue': (submission.get('state','0') == "TURNED_IN" or submission.get('state','0') == "RETURNED"),
+                    # 'nota': submission.get('assignedGrade',-1),
+                    # }
+                    # a.update(b)
+                    # tarefas.append(a)
 
-    return redirect('/classroom/calendar')
+        return redirect('/classroom/calendar')
+
+    except:
+        return redirect('/accounts/logout')
 
 def show_calendar(request):
     
