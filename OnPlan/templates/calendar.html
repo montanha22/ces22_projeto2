@@ -431,18 +431,20 @@
 
             meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
             
-            sTable = [
-                {
-                    'materia':'ces22', 
-                    'faltas':'10', 
-                    'boletim':[
-                        {'nome_da_avaliacao':'avaliação1', 'peso':'1', 'nota':'9.3'}, 
-                        {'nome_da_avaliacao':'avaliação1', 'peso':'1', 'nota':'9.3'}
-                    ], 
-                    'anotacoes':'anotações sobre ces22'
-                },
+            // sTable = [
+            //     {
+            //         'materia':'ces22', 
+            //         'faltas':'10', 
+            //         'boletim':[
+            //             {'nome_da_avaliacao':'avaliação1', 'peso':'1', 'nota':'9.3'}, 
+            //             {'nome_da_avaliacao':'avaliação1', 'peso':'1', 'nota':'9.0'}
+            //         ], 
+            //         'anotacoes':'anotações sobre ces22'
+            //     },
                 
-            ];
+            // ];
+            sTable = JSON.parse(JSON.stringify({{table}}))
+            console.log(sTable)
 
             // tasks = [
             //     {
@@ -617,7 +619,9 @@
                     }
                     sTable.push(materia_dict);
                 }
-                console.log(sTable)
+                console.log(JSON.stringify(sTable))
+                console.log(JSON.parse(JSON.stringify(sTable)))
+                return sTable;
             }
 
 
@@ -773,8 +777,28 @@
             });
 
             $(document).on('click', "#salvar_materia_button", function(event){
-                readSubjectTable();
+                sTable = readSubjectTable();
                 // SALVAR A VARIÁVEL  sTable no banco
+
+                const form = document.createElement('form')
+                form.method = 'post'
+                form.action = '/classroom/salvartabela'
+
+                // Agora que fica bronco mesmo
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'table';
+                hiddenField.value = JSON.stringify(sTable);
+                form.appendChild(hiddenField);
+
+                hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'csrfmiddlewaretoken';
+                hiddenField.value = "{{ csrf_token }}";
+                form.appendChild(hiddenField);
+
+                document.body.appendChild(form);
+                form.submit()                
 
             });
 
@@ -905,6 +929,7 @@
                 form.appendChild(hiddenField);
 
                 document.body.appendChild(form);
+                console.log(form)
                 form.submit()
             });
 

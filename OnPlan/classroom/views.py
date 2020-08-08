@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 import json
 from allauth.socialaccount.models import SocialToken
 from google.oauth2.credentials import Credentials
-from classroom.models import tarefa_classroom, tarefa_personalizada
+from classroom.models import tarefa_classroom, tarefa_personalizada, subject_table
 from itertools import chain
 import datetime
 
@@ -96,7 +96,10 @@ def show_calendar(request):
     tp = list(tarefa_personalizada.objects.filter(usuario=request.user).values())
 
     tarefas = list(chain(tc,tp))
-    return render(request, 'calendar.html', {'tarefas': tarefas})
+
+    table = list(subject_table.objects.filter(usuario = request.user).values())
+    print(table)
+    return render(request, 'calendar.html', {'tarefas': tarefas, 'table': table})
 
 
 def salvar_atividade(request):
@@ -119,12 +122,12 @@ def salvar_atividade(request):
 def excluir_atividade(request):
 
     post = request.POST
-
+    print('flkdjgflkfjlkj')
     if post.get("classroom") == 'true':
         tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
     else:
         tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
-
+    print(tarefa)
     tarefa.delete()
 
     return redirect('/classroom/calendar')
@@ -139,6 +142,19 @@ def completar_atividade(request):
         tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
 
     tarefa.update(done=post.get('done'))
+
+    return redirect('/classroom/calendar')
+
+def salvar_tabela(request):
+
+    post = request.POST
+    subject_table.objects.filter(usuario=request.user)
+
+    nt = subject_table(
+        table = post.get('table'),
+        usuario = request.user
+    )
+    nt.save()
 
     return redirect('/classroom/calendar')
     

@@ -8,4 +8,5 @@ urlpatterns = [
     path('salvaratividade',views.salvar_atividade, name = 'salvar_atividade'),
     path('excluiratividade',views.excluir_atividade, name = 'excluir_atividade'),
     path('completaratividade',views.completar_atividade, name = 'completar_atividade'),
+    path('salvartabela',views.salvar_tabela, name = 'salvar_tabela'),
 ]
