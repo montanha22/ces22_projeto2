@@ -67,6 +67,25 @@
     margin-top: 25px;
     vertical-align: middle;
 }
+
+#salvar_materia_button {
+
+    background-color: #801336;
+    width: 300px;
+    height: 80px;
+    color: white;
+    margin: 5px;
+}
+#salvar_materia_button:hover{
+    background-color: #ee4540;
+    color: white;
+}
+#salvar_materia_button h2{
+    padding: 0px;
+    margin: 0px;
+    margin-top: 25px;
+    vertical-align: middle;
+}
 .remove_materia_button, .add_nota_button, .remove_nota_button{
     width: 30px;
 }
