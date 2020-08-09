@@ -163,10 +163,15 @@ def salvar_tabela(request):
 
     try:
         post = request.POST
-        tabela=subject_table.objects.filter(usuario=request.user)
-        tabela.update(table=post.get('table'))
+        subject_table.objects.filter(usuario=request.user).delete()
+        nt = subject_table(
+            table = post.get('table'),
+            usuario = request.user
+        )
+        nt.save()
 
         return redirect('/classroom/calendar')
-    except:
+    except Exception as err:
+        print(err)
         return redirect('/accounts/logout')
     
