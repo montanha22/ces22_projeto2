@@ -98,7 +98,10 @@ def show_calendar(request):
     tarefas = list(chain(tc,tp))
 
     table = subject_table.objects.filter(usuario = request.user).first()
-    table = table.table
+    try:
+        table = table.table
+    except:
+        table=[]
     return render(request, 'calendar.html', {'tarefas': tarefas, 'table': table})
 
 
@@ -148,13 +151,8 @@ def completar_atividade(request):
 def salvar_tabela(request):
 
     post = request.POST
-    subject_table.objects.filter(usuario=request.user).delete()
-
-    nt = subject_table(
-        table = post.get('table'),
-        usuario = request.user
-    )
-    nt.save()
+    tabela=subject_table.objects.filter(usuario=request.user)
+    tabela.update(table=post.get('table'))
 
     return redirect('/classroom/calendar')
     
