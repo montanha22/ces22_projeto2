@@ -92,67 +92,81 @@ def classroom_sync(request):
 
 def show_calendar(request):
     
-    tc = list(tarefa_classroom.objects.filter(usuario=request.user).values())
-    tp = list(tarefa_personalizada.objects.filter(usuario=request.user).values())
-
-    tarefas = list(chain(tc,tp))
-
-    table = subject_table.objects.filter(usuario = request.user).first()
     try:
-        table = table.table
-    except:
-        table=[]
-    return render(request, 'calendar.html', {'tarefas': tarefas, 'table': table})
+        tc = list(tarefa_classroom.objects.filter(usuario=request.user).values())
+        tp = list(tarefa_personalizada.objects.filter(usuario=request.user).values())
 
+        tarefas = list(chain(tc,tp))
+
+        table = subject_table.objects.filter(usuario = request.user).first()
+        try:
+            table = table.table
+        except:
+            table=[]
+        return render(request, 'calendar.html', {'tarefas': tarefas, 'table': table})
+
+    except:
+        return redirect('/accounts/logout')
 
 def salvar_atividade(request):
-    
-    post = request.POST
-    nt = tarefa_personalizada(
-        titulo = post.get("titulo","Sem Titulo"),
-        materia= post.get("materia","Sem Matéria"),
-        descrição=post.get("descrição","Sem Descrição"), 
-        classroom= "false",
-        data_limite= post.get("data_limite","00/00/0000"),
-        usuario = request.user,
-        done = 'false'
-    )
-    nt.save()
+    try:
+        post = request.POST
+        nt = tarefa_personalizada(
+            titulo = post.get("titulo","Sem Titulo"),
+            materia= post.get("materia","Sem Matéria"),
+            descrição=post.get("descrição","Sem Descrição"), 
+            classroom= "false",
+            data_limite= post.get("data_limite","00/00/0000"),
+            usuario = request.user,
+            done = 'false'
+        )
+        nt.save()
 
-    return redirect('/classroom/calendar')
+        return redirect('/classroom/calendar')
+
+    except:
+        return redirect('/accounts/logout')
 
 
 def excluir_atividade(request):
+    try:
+        post = request.POST
+        if post.get("classroom") == 'true':
+            tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+        else:
+            tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+        tarefa.delete()
 
-    post = request.POST
-    print('flkdjgflkfjlkj')
-    if post.get("classroom") == 'true':
-        tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
-    else:
-        tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
-    print(tarefa)
-    tarefa.delete()
+        return redirect('/classroom/calendar')
 
-    return redirect('/classroom/calendar')
+    except:
+        return redirect('/accounts/logout')
 
 def completar_atividade(request):
 
-    post = request.POST
+    try:
+        post = request.POST
 
-    if post.get("classroom") == 'true':
-        tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
-    else:
-        tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+        if post.get("classroom") == 'true':
+            tarefa = tarefa_classroom.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
+        else:
+            tarefa = tarefa_personalizada.objects.filter(materia=post.get("materia"),titulo=post.get("titulo"),usuario=request.user)
 
-    tarefa.update(done=post.get('done'))
+        tarefa.update(done=post.get('done'))
 
-    return redirect('/classroom/calendar')
+        return redirect('/classroom/calendar')
+    
+    except:
+        return redirect('/accounts/logout')
 
 def salvar_tabela(request):
 
-    post = request.POST
-    tabela=subject_table.objects.filter(usuario=request.user)
-    tabela.update(table=post.get('table'))
+    try:
+        post = request.POST
+        tabela=subject_table.objects.filter(usuario=request.user)
+        tabela.update(table=post.get('table'))
 
-    return redirect('/classroom/calendar')
+        return redirect('/classroom/calendar')
+    except:
+        return redirect('/accounts/logout')
     
