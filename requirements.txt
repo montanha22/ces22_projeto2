@@ -1,7 +1,7 @@
 django_allauth==0.42.0
 django_heroku==0.3.1
 django.utils.six
-Django==3.0.7
+Django==3.1.6
 google_auth_oauthlib==0.4.1
 google_api_python_client==1.10.0
 protobuf==3.12.4
